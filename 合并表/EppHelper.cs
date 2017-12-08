@@ -24,7 +24,7 @@ namespace 合并表
             {
                 var ws = pkg.Workbook.Worksheets.Add(SheetName);
                 ws.Cells[1, 1].LoadFromDataTable(Dt, WithTitle);
-                ws.Cells[ws.Dimension.Address].AutoFitColumns();
+                //ws.Cells[ws.Dimension.Address].AutoFitColumns();
                 pkg.Save();
                 result = true;
             }

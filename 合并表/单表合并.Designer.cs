@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.mcSheetNames = new 合并表.MultipleCombobox();
             this.btnChoose = new System.Windows.Forms.Button();
             this.btnMerge = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.mcSheetNames = new 合并表.MultipleCombobox();
+            this.label1 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -44,11 +45,23 @@
             this.flowLayoutPanel1.Controls.Add(this.btnChoose);
             this.flowLayoutPanel1.Controls.Add(this.btnMerge);
             this.flowLayoutPanel1.Controls.Add(this.btnExport);
+            this.flowLayoutPanel1.Controls.Add(this.label1);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(728, 48);
             this.flowLayoutPanel1.TabIndex = 0;
+            // 
+            // mcSheetNames
+            // 
+            this.mcSheetNames.BackColor = System.Drawing.Color.Transparent;
+            this.mcSheetNames.CbSource = null;
+            this.mcSheetNames.ColumnName = null;
+            this.mcSheetNames.Location = new System.Drawing.Point(3, 3);
+            this.mcSheetNames.Name = "mcSheetNames";
+            this.mcSheetNames.Size = new System.Drawing.Size(220, 38);
+            this.mcSheetNames.TabIndex = 0;
+            this.mcSheetNames.Title = "子表名称";
             // 
             // btnChoose
             // 
@@ -97,16 +110,15 @@
             this.dataGridView1.Size = new System.Drawing.Size(728, 523);
             this.dataGridView1.TabIndex = 1;
             // 
-            // mcSheetNames
+            // label1
             // 
-            this.mcSheetNames.BackColor = System.Drawing.Color.Transparent;
-            this.mcSheetNames.CbSource = null;
-            this.mcSheetNames.ColumnName = null;
-            this.mcSheetNames.Location = new System.Drawing.Point(3, 3);
-            this.mcSheetNames.Name = "mcSheetNames";
-            this.mcSheetNames.Size = new System.Drawing.Size(220, 38);
-            this.mcSheetNames.TabIndex = 0;
-            this.mcSheetNames.Title = "子表名称";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(508, 16);
+            this.label1.Margin = new System.Windows.Forms.Padding(10, 16, 3, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(41, 12);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "label1";
             // 
             // 单表合并
             // 
@@ -121,6 +133,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "单表合并";
             this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
 
@@ -134,5 +147,6 @@
         private System.Windows.Forms.Button btnChoose;
         private System.Windows.Forms.Button btnMerge;
         private System.Windows.Forms.Button btnExport;
+        private System.Windows.Forms.Label label1;
     }
 }

@@ -22,28 +22,35 @@ namespace 合并表
         private void btnChoose_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Multiselect = true;//该值确定是否可以选择多个文件
+            dialog.Multiselect = false;
             dialog.Title = "请选择文件夹";
             dialog.Filter = "所有文件(*.xls*)|*.xls*";
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 CurrentPath = dialog.FileName;
                 mcSheetNames.CbSource = null;
-                try
+                //var lst = new List<string>();
+                label1.Text = "正在获取sheet列表";
+                var t = Task.Run(() =>
                 {
                     if (Path.GetExtension(CurrentPath) == "xlsx")
                     {
-                        mcSheetNames.CbSource = EppHelper.GetAllSheet(CurrentPath);
+                        return EppHelper.GetAllSheet(CurrentPath);
                     }
                     else
                     {
-                        mcSheetNames.CbSource = NpoiHelper.GetAllSheet(CurrentPath);
+                        return NpoiHelper.GetAllSheet(CurrentPath);
                     }
-                }
-                catch (Exception ex)
+                });
+                Task.Run(() => 
                 {
-                    MessageBox.Show(ex.ToString());
-                }
+                    Task.WaitAll(t);
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        mcSheetNames.CbSource = t.Result;
+                        label1.Text = "sheet列表获取完毕";
+                    });
+                });
             }
         }
 
@@ -54,20 +61,32 @@ namespace 合并表
             try
             {
                 var dt = new DataTable();
-                var ds = new DataSet();
-                if (Path.GetExtension(CurrentPath) == "xlsx")
+                //var ds = new DataSet();
+                label1.Text = "正在合并sheet内容";
+                var t = Task.Run(() =>
                 {
-                    ds = EppHelper.ReadExcelToDataSet(sheetnames, CurrentPath);
-                }
-                else
+                    if (Path.GetExtension(CurrentPath) == "xlsx")
+                    {
+                        return EppHelper.ReadExcelToDataSet(sheetnames, CurrentPath);
+                    }
+                    else
+                    {
+                        return NpoiHelper.ReadExcelToDataSet(sheetnames, CurrentPath);
+                    }
+                });
+                Task.Run(() =>
                 {
-                    ds = NpoiHelper.ReadExcelToDataSet(sheetnames, CurrentPath);
-                }
-                foreach (DataTable sdt in ds.Tables)
-                {
-                    dt.Merge(sdt);
-                }
-                dataGridView1.DataSource = dt;
+                    Task.WaitAll(t);
+                    foreach (DataTable sdt in t.Result.Tables)
+                    {
+                        dt.Merge(sdt);
+                    }
+                    this.Invoke((MethodInvoker)delegate
+                    {
+                        dataGridView1.DataSource = dt;
+                        label1.Text = "数据合并完毕";
+                    });
+                });
             }
             catch (Exception ex)
             {
@@ -85,11 +104,24 @@ namespace 合并表
             {
                 try
                 {
+                    label1.Text = "正在导出数据";
                     var dt = dataGridView1.DataSource as DataTable;
-                    if (EppHelper.ExportByDt(kk.FileName, dt))
+                    var t = Task.Run(() =>
                     {
-                        MessageBox.Show("保存Excel成功");
-                    }
+                        return EppHelper.ExportByDt(kk.FileName, dt);
+                    });
+                    Task.Run(() =>
+                    {
+                        Task.WaitAll(t);
+                        if (t.Result)
+                        {
+                            this.Invoke((MethodInvoker)delegate
+                            {
+                                label1.Text = "导出成功";
+                            });
+                        }
+                    });
+                    
                 }
                 catch (Exception ex)
                 {
