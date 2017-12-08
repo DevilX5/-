@@ -88,6 +88,12 @@
     <Compile Include="单表合并.Designer.cs">
       <DependentUpon>单表合并.cs</DependentUpon>
     </Compile>
+    <Compile Include="合并文件夹.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="合并文件夹.Designer.cs">
+      <DependentUpon>合并文件夹.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="MultipleCombobox.resx">
       <DependentUpon>MultipleCombobox.cs</DependentUpon>
     </EmbeddedResource>
@@ -102,6 +108,9 @@
     </Compile>
     <EmbeddedResource Include="单表合并.resx">
       <DependentUpon>单表合并.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="合并文件夹.resx">
+      <DependentUpon>合并文件夹.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
