@@ -25,17 +25,16 @@ namespace 合并表
             }
             return lst;
         }
-        public static DataSet ReadExcelToDataSet(List<string> SheetNames, string filePath)
+        public static void ReadExcelToDataSet(DataSet ds,FileAndSheets fileAndSheets)
         {
-            DataSet ds = new DataSet("ds");
             DataRow dr;
             ICell objCellValue;
             string cellValue;
-            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
+            using (FileStream fs = new FileStream(fileAndSheets.FileName, FileMode.Open, FileAccess.ReadWrite))
             {
                 var workbook = new HSSFWorkbook(fs);
 
-                foreach (var name in SheetNames)
+                foreach (var name in fileAndSheets.SheetNames)
                 {
                     var sheet = workbook.GetSheet(name);
                     if (sheet == null) continue;
@@ -87,8 +86,6 @@ namespace 合并表
                     }
                     ds.Tables.Add(dt);
                 }
-
-                return ds;
             }
         }
     }

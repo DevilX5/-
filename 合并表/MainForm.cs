@@ -16,5 +16,17 @@ namespace 合并表
         {
             InitializeComponent();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var f = new 单表合并();
+            f.Show();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            var f = new 合并文件夹();
+            f.Show();
+        }
     }
 }

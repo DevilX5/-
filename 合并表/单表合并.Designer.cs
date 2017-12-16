@@ -29,12 +29,12 @@
         private void InitializeComponent()
         {
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.mcSheetNames = new 合并表.MultipleCombobox();
             this.btnChoose = new System.Windows.Forms.Button();
             this.btnMerge = new System.Windows.Forms.Button();
             this.btnExport = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.mcSheetNames = new 合并表.MultipleCombobox();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -51,17 +51,6 @@
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(728, 48);
             this.flowLayoutPanel1.TabIndex = 0;
-            // 
-            // mcSheetNames
-            // 
-            this.mcSheetNames.BackColor = System.Drawing.Color.Transparent;
-            this.mcSheetNames.CbSource = null;
-            this.mcSheetNames.ColumnName = null;
-            this.mcSheetNames.Location = new System.Drawing.Point(3, 3);
-            this.mcSheetNames.Name = "mcSheetNames";
-            this.mcSheetNames.Size = new System.Drawing.Size(220, 38);
-            this.mcSheetNames.TabIndex = 0;
-            this.mcSheetNames.Title = "子表名称";
             // 
             // btnChoose
             // 
@@ -118,6 +107,18 @@
             this.dataGridView1.RowTemplate.Height = 23;
             this.dataGridView1.Size = new System.Drawing.Size(728, 523);
             this.dataGridView1.TabIndex = 1;
+            this.dataGridView1.RowStateChanged += new System.Windows.Forms.DataGridViewRowStateChangedEventHandler(this.dataGridView1_RowStateChanged);
+            // 
+            // mcSheetNames
+            // 
+            this.mcSheetNames.BackColor = System.Drawing.Color.Transparent;
+            this.mcSheetNames.CbSource = null;
+            this.mcSheetNames.ColumnName = null;
+            this.mcSheetNames.Location = new System.Drawing.Point(3, 3);
+            this.mcSheetNames.Name = "mcSheetNames";
+            this.mcSheetNames.Size = new System.Drawing.Size(220, 38);
+            this.mcSheetNames.TabIndex = 0;
+            this.mcSheetNames.Title = "子表名称";
             // 
             // 单表合并
             // 

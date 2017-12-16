@@ -41,24 +41,23 @@ namespace 合并表
                 }
             }
         }
-        public static DataSet ReadExcelToDataSet(List<string> SheetNames, string filePath)
+        public static void ReadExcelToDataSet(DataSet ds,FileAndSheets fileAndSheets)
         {
-            DataSet ds = new DataSet("ds");
             DataRow dr;
             object objCellValue;
             string cellValue;
-            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.ReadWrite))
+            using (FileStream fs = new FileStream(fileAndSheets.FileName, FileMode.Open, FileAccess.ReadWrite))
             using (var package = new ExcelPackage())
             {
                 package.Load(fs);
-                foreach (var sheet in package.Workbook.Worksheets.Where(n => SheetNames.Contains(n.Name)))
+                foreach (var sheet in package.Workbook.Worksheets.Where(n => fileAndSheets.SheetNames.Contains(n.Name)))
                 {
                     if (sheet.Dimension == null) continue;
                     var columnCount = sheet.Dimension.End.Column;
                     var rowCount = sheet.Dimension.End.Row;
                     if (rowCount > 0)
                     {
-                        DataTable dt = new DataTable(sheet.Name);
+                        var dt = new DataTable();
                         for (int j = 0; j < columnCount; j++)//设置DataTable列名  
                         {
                             objCellValue = sheet.Cells[1, j + 1].Value;
@@ -80,7 +79,6 @@ namespace 合并表
                     }
                 }
             }
-            return ds;
         }
         public static bool ExportByModel<T>(string path, IEnumerable<T> ModelList, string SheetName = "Sheet1", bool WithTitle = true)
         {

@@ -25,6 +25,7 @@ namespace 合并表
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 CurrentPath = dialog.SelectedPath;
+                toolStripLabel1.Text = $"文件夹路径：{CurrentPath}";
                 GetFolderFiles();
             }
         }
@@ -36,14 +37,48 @@ namespace 合并表
             {
                 var tn = new TreeNode();
                 tn.Text = file.Name;
-                tn.Nodes.Add("");
+                tn.Nodes.Add("正在读取...");
                 nodelst.Add(tn);
             }
             treeView1.Nodes.AddRange(nodelst.ToArray());
         }
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
-
+            var dt = new DataTable();
+            toolStripLabel1.Text = "正在合并数据...";
+            var s = treeView1.AllTreeNodes().Where(n => !n.Text.Equals("正在读取...") &&n.Checked).Select(n => n.FullPath);
+            var c =s.Select(n => n.Split('\\')[0]).Distinct().Select(n=>new FileAndSheets() {FileName=n}).ToList();
+            var tklst = new List<Task>();
+            var ds = new DataSet("ds");
+            c.ForEach(f =>
+            {
+                f.SheetNames = s.Where(n => n.Contains(f.FileName) && n.Contains("\\")).Select(n => n.Split('\\')[1]).ToList();
+                var t = Task.Run(() =>
+                {
+                    f.FileName = $"{CurrentPath}\\{f.FileName}";
+                    if (f.SheetNames.Count == 0)
+                        f.SheetNames = ExcelHelper.GetSheetList(f.FileName);
+                    ExcelHelper.SetDataSet(ds, f);
+                });
+                var waittk = Task.Run(() =>
+                {
+                    Task.WaitAll(t);
+                });
+                tklst.Add(waittk);
+            });
+            Task.Run(() =>
+            {
+                Task.WaitAll(tklst.ToArray());
+                foreach (DataTable sdt in ds.Tables)
+                {
+                    dt.Merge(sdt);
+                }
+                this.Invoke((MethodInvoker)delegate
+                {
+                    dataGridView1.DataSource = dt;
+                    toolStripLabel1.Text = "数据合并完毕";
+                });
+            });
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)
@@ -102,36 +137,45 @@ namespace 合并表
             }
         }
 
-        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-
-        }
-
         private void 合并文件夹_Load(object sender, EventArgs e)
         {
-            CurrentPath = "C:\\Users\\DX\\Desktop\\新建文件夹";
-            GetFolderFiles();
-        }
-
-        private void treeView1_BeforeExpand(object sender, TreeViewCancelEventArgs e)
-        {
-            MessageBox.Show(treeView1.SelectedNode.FullPath);
-            //if(treeView1.SelectedNode.FullPath)
-            //var file = $"{CurrentPath}\\{treeView1.SelectedNode.Text}";
-            //if (Path.GetExtension(CurrentPath) == "xlsx")
-            //{
-            //     EppHelper.GetAllSheet(file);
-            //}
-            //else
-            //{
-            //    NpoiHelper.GetAllSheet(file);
-            //}
 
         }
 
-        private void treeView1_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        private void treeView1_AfterExpand(object sender, TreeViewEventArgs e)
         {
-            treeView1.SelectedNode.Expand();
+            var currentNode = e.Node;
+            var filepath = $"{CurrentPath}\\{currentNode.FullPath}";
+            currentNode.Nodes.Clear();
+            currentNode.Nodes.Add("正在读取...");
+            var t = Task.Run(() =>
+            {
+                if (Path.GetExtension(filepath).Equals(".xlsx"))
+                {
+                    return EppHelper.GetAllSheet(filepath);
+                }
+                else
+                {
+                    return NpoiHelper.GetAllSheet(filepath);
+                }
+            });
+            Task.Run(() =>
+            {
+                Task.WaitAll(t);
+                this.Invoke((MethodInvoker)delegate
+                {
+                    currentNode.Nodes.Clear();
+                    t.Result.ForEach(f => 
+                    {
+                        currentNode.Nodes.Add(f);
+                    });
+                });
+            });
+        }
+
+        private void dataGridView1_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
+        {
+            e.Row.HeaderCell.Value = string.Format("{0}", e.Row.Index + 1);
         }
     }
 }

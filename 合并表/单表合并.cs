@@ -25,22 +25,14 @@ namespace 合并表
             dialog.Multiselect = false;
             dialog.Title = "请选择文件夹";
             dialog.Filter = "所有文件(*.xls*)|*.xls*";
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
                 CurrentPath = dialog.FileName;
                 mcSheetNames.CbSource = null;
-                //var lst = new List<string>();
                 label1.Text = "正在获取sheet列表";
                 var t = Task.Run(() =>
                 {
-                    if (Path.GetExtension(CurrentPath) == "xlsx")
-                    {
-                        return EppHelper.GetAllSheet(CurrentPath);
-                    }
-                    else
-                    {
-                        return NpoiHelper.GetAllSheet(CurrentPath);
-                    }
+                    return ExcelHelper.GetSheetList(CurrentPath);
                 });
                 Task.Run(() => 
                 {
@@ -56,8 +48,10 @@ namespace 合并表
 
         private void btnMerge_Click(object sender, EventArgs e)
         {
+            var fs = new FileAndSheets();
+            fs.FileName = CurrentPath;
             var sheets = mcSheetNames.TheValue;
-            var sheetnames = string.IsNullOrEmpty(sheets) ? mcSheetNames.CbSource : sheets.Split(',').ToList();
+            fs.SheetNames = string.IsNullOrEmpty(sheets) ? mcSheetNames.CbSource : sheets.Split(',').ToList();
             try
             {
                 var dt = new DataTable();
@@ -65,14 +59,9 @@ namespace 合并表
                 label1.Text = "正在合并sheet内容";
                 var t = Task.Run(() =>
                 {
-                    if (Path.GetExtension(CurrentPath) == "xlsx")
-                    {
-                        return EppHelper.ReadExcelToDataSet(sheetnames, CurrentPath);
-                    }
-                    else
-                    {
-                        return NpoiHelper.ReadExcelToDataSet(sheetnames, CurrentPath);
-                    }
+                    var ds = new DataSet("ds");
+                    ExcelHelper.SetDataSet(ds,fs);
+                    return ds;
                 });
                 Task.Run(() =>
                 {
@@ -128,6 +117,11 @@ namespace 合并表
                     MessageBox.Show(ex.ToString());
                 }
             }
+        }
+
+        private void dataGridView1_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
+        {
+            e.Row.HeaderCell.Value = string.Format("{0}", e.Row.Index + 1);
         }
     }
 }
