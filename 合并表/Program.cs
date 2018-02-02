@@ -16,7 +16,7 @@ namespace 合并表
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new 单表合并());
+            //Application.Run(new 分表());
             Application.Run(new MainForm());
         }
     }

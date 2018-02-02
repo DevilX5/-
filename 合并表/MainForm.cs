@@ -28,5 +28,11 @@ namespace 合并表
             var f = new 合并文件夹();
             f.Show();
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var f = new 分表();
+            f.Show();
+        }
     }
 }
